@@ -37,6 +37,7 @@ function makeFile(sensors) {
 		if (err) throw err; // If there's an error stop and show the message
 
 		console.log("Header Written");
+		process.exit();
 	});
 }
 
@@ -54,7 +55,10 @@ function writeRow(sensors, sensorValues) {
 	
 	// Write the new row into the file
 	console.log("Adding: " + newrow);
-	fs.appendFile(getFilePath(), newrow, function(err) { if (err) throw err; });
+	fs.appendFile(getFilePath(), newrow, function(err) { 
+		if (err) throw err;
+		process.exit();
+	});
 }
 
 function getData() {

@@ -8,7 +8,7 @@ var FILEPATH = 'D:/';
 
 // Returns the correct folder for the current month
 function getFolderPath() {
-	return FILEPATH + "datalog/" + (new Date()).getFullYear() +"/" + (new Date()).getMonth() + "/";
+	return FILEPATH + "datalog/" + (new Date()).getFullYear() +"/" + ((new Date()).getMonth() + 1) + "/";
 }
 
 // Returns the correct file for the current day
@@ -37,7 +37,7 @@ function makeFile(sensors) {
 		if (err) throw err; // If there's an error stop and show the message
 
 		console.log("Header Written");
-		process.exit();
+		// process.exit();
 	});
 }
 
@@ -57,7 +57,7 @@ function writeRow(sensors, sensorValues) {
 	console.log("Adding: " + newrow);
 	fs.appendFile(getFilePath(), newrow, function(err) { 
 		if (err) throw err;
-		process.exit();
+		// process.exit();
 	});
 }
 
@@ -81,7 +81,6 @@ function getData() {
 				makeFile(sensors);
 			};
 
-			var received = 0; // Keep track of how much data we've got back
 			var sensorValues = {}; // An object to store the data we received
 
 			// Write sensor data to the file
@@ -92,8 +91,7 @@ function getData() {
 					sensorValues[sensor.sensorID] = parseFloat(reply).toFixed(1);
 					console.log(sensor.name + ": " + sensorValues[sensor.sensorID] + " " + sensor.unit);
 					
-					received++;
-					if (received == sensors.length) {
+					if (Object.keys(sensorValues).length == sensors.length) {
 						// We've now got all the data
 						writeRow(sensors, sensorValues);
 					}
@@ -111,5 +109,5 @@ redisConnect.on('error',function() { console.log("Error in Redis"); });
 
 getData();
 
-// setInterval(getData, 1000 * 60 * 5);
+setInterval(getData, 1000 * 60 * 5);
 // This needs fixing long term so it doesn't need windows task scheduler
